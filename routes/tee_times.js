@@ -1,12 +1,13 @@
-const express = require('express');
+/* GET home page. */
+const express = require("express");
 const router = express.Router();
-const knex = require('../db/knex');
+const tee_timesController = require("../controllers/tee_times");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  knex.raw('SELECT * from todos').then(function(todos) {
-    res.send(todos.rows);
-  });
-});
+router.get("/tee_times", tee_timesController.getAllTee_Times);
+router.get("/tee_times/:id", tee_timesController.getOneTee_Time);
+router.post("/tee_times", tee_timesController.addOneTee_Time);
+router.patch("/tee_times/:id", tee_timesController.updateOneTee_Time);
+router.delete("/tee_times/:id", tee_timesController.removeOneTee_Time);
 
 module.exports = router;

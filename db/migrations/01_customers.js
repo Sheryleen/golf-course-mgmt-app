@@ -3,7 +3,8 @@ exports.up = function(knex) {
     table.increments();
     table.string("name").notNullable();
     table.string("company").notNullable();
-    table.integer("phone").notNullable();
+    table.string("email").notNullable();
+    table.string("phone").notNullable();
     table.string("address").notNullable();
     table.timestamps(true, true);
   });
