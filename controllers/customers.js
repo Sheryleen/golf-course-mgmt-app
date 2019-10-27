@@ -1,41 +1,46 @@
 const knex = require("../db/knex");
+const Customer = require("../models/Customer");
 
 exports.getAllCustomers = (req, res) => {
-  knex //instance of knex
-    .select() //select all
-    .table("customers") //from customers
-    .then(customers => res.json(customers)); //getting all customers back
+  Customer.query()
+    .eager("tee_times")
+    .then(customers => res.json(customers));
 };
 
 exports.getOneCustomer = (req, res) => {
-  knex
-    .select() //retrieval process
-    .table("customers")
-    .where("id", req.params.id)
-    .then(user => res.json(user));
+  Customer.query()
+    .findById(req.params.id)
+    .eager("tee_times")
+    .then(customer => res.json(customer));
 };
 exports.addOneCustomer = (req, res) => {
   knex("customers")
     .insert(req.body)
     .returning("*")
-    .then(newUser => res.json(newCustomer));
+    .then(newCustomer => res.json(newCustomer));
 };
 
 exports.updateOneCustomer = (req, res) => {
-  knex("customers")
-    .update({
-      ...req.body,
-      updated_at: newData()
-    })
-    .where("id", req.params.id)
-    .returning("*")
-    .then(updatedCustomer => res.json(updateCustomer));
+  Customer.query()
+    .findById(req.params.id)
+    .update("tee_times");
+  updated_at: newData().then(customer => res.json(customer));
 };
+
+//   knex("customers")
+//     .update({
+//       ...req.body,
+//       updated_at: newData()
+//     })
+//     .where("id", req.params.id)
+//     .returning("*")
+//     .then(updateCustomer => res.json(updateCustomer));
+// };
 
 exports.removeOneCustomer = (req, res) => {
   knex("customers")
     .del()
-    .where("id, req.params.id")
+    .where("id", req.params.id)
     .returning("*")
     .then(newCustomer => res.json(newCustomer));
 };

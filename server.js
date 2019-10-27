@@ -5,10 +5,11 @@ const port = process.env.PORT || 8000;
 const cors = require("cors");
 const logger = require("morgan");
 const knex = require("./db/knex");
+const { Model } = require("objection");
 
 const customers = require("./routes/customers");
 const tee_times = require("./routes/tee_times");
-
+Model.knex(knex);
 const app = express();
 
 app.use(logger("dev"));

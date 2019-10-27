@@ -16,11 +16,19 @@ exports.getOneTee_Time = (req, res) => {
 exports.addOneTee_Time = (req, res) => {
   knex("tee_times")
     .insert({
-      ...req.body //all column data in row
+      time: req.body.time //inserts new time into tee times table
     })
 
-    .returning("*")
-    .then(tee_times => res.json(tee_times));
+    .returning("*") //returns newly created time
+    .then(tee_times => {
+      knex("customers_tee_times")
+        //inserts customer id and newly created tee time into joined table
+        .insert({
+          customer_id: req.body.customer_id,
+          tee_time_id: tee_times.id
+        });
+      res.json(tee_times);
+    });
 };
 
 exports.updateOneTee_Time = (req, res) => {
