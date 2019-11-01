@@ -1,52 +1,36 @@
 const knex = require("../db/knex");
+const TeeTime = require("../models/TeeTime");
 
 exports.getAllTee_Times = (req, res) => {
-  knex //instance of knex
-    .select() //select all
-    .table("tee_times") //from appointments
-    .then(tee_times => res.json(tee_times)); //getting all appts back
+  TeeTime.query()
+    .eager("customers")
+    .then(customers => res.json(customers));
 };
 
 exports.getOneTee_Time = (req, res) => {
-  knex("tee_times")
-    .select()
-    .then(tee_times => res.json(tee_times));
+  TeeTime.query()
+    .findById(req.params.id)
+    .eager("customers")
+    .then(customer => res.json(customer));
 };
-
 exports.addOneTee_Time = (req, res) => {
-  knex("tee_times")
-    .insert({
-      time: req.body.time //inserts new time into tee times table
-    })
-
-    .returning("*") //returns newly created time
-    .then(tee_times => {
-      knex("customers_tee_times")
-        //inserts customer id and newly created tee time into joined table
-        .insert({
-          customer_id: req.body.customer_id,
-          tee_time_id: tee_times.id
-        });
-      res.json(tee_times);
-    });
+  TeeTime.query()
+    .insert(req.body)
+    .returning("*")
+    .then(newTeeTime => res.json(newTeeTime));
 };
 
 exports.updateOneTee_Time = (req, res) => {
-  knex("tee_times")
-    .update({
-      ...req.body, //all column data in row
-      updated_at: new Date()
-    })
-
-    .where("id", req.params.id)
+  TeeTime.query()
+    .findById(req.params.id)
+    .update("tee_time")
     .returning("*")
-    .then(updatedTee_Time => res.json(updatedTee_Time));
+    .then(tee_time => res.json(tee_time));
 };
 
 exports.removeOneTee_Time = (req, res) => {
-  knex("tee_times")
-    .del()
-    .where("id", req.params.id)
+  TeeTime.query()
+    .deleteById(req.params.id)
     .returning("*")
-    .then(newTee_Time => res.json(newTee_Time)); //returns removed tee time
+    .then(newTeeTime => res.json(newTeeTime));
 };

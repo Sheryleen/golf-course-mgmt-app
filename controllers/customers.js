@@ -14,7 +14,8 @@ exports.getOneCustomer = (req, res) => {
     .then(customer => res.json(customer));
 };
 exports.addOneCustomer = (req, res) => {
-  knex("customers")
+  Customer.query()
+    // knex("customers")
     .insert(req.body)
     .returning("*")
     .then(newCustomer => res.json(newCustomer));
@@ -23,24 +24,14 @@ exports.addOneCustomer = (req, res) => {
 exports.updateOneCustomer = (req, res) => {
   Customer.query()
     .findById(req.params.id)
-    .update("tee_times");
-  updated_at: newData().then(customer => res.json(customer));
+    .update(req.body)
+    .returning("*")
+    .then(customer => res.json(customer));
 };
 
-//   knex("customers")
-//     .update({
-//       ...req.body,
-//       updated_at: newData()
-//     })
-//     .where("id", req.params.id)
-//     .returning("*")
-//     .then(updateCustomer => res.json(updateCustomer));
-// };
-
 exports.removeOneCustomer = (req, res) => {
-  knex("customers")
-    .del()
-    .where("id", req.params.id)
+  Customer.query()
+    .deleteById(req.params.id)
     .returning("*")
     .then(newCustomer => res.json(newCustomer));
 };
